@@ -1,0 +1,25 @@
+services:
+  time-ui:
+    build:
+      context: .
+      target: development
+      args:
+        - USER_ID=1000
+    container_name: time-lab
+    # Entramos como el usuario time (ID 1000)
+    user: "time"
+    volumes:
+      # Sincroniza tu código fuente (Host -> Contenedor)
+      - .:/app
+      # Volumen con nombre para persistir las dependencias y aislarlas del host
+      - time_node_modules:/app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+    # Esto asegura que si el contenedor cae por un error leve, intente subir solo
+    restart: unless-stopped
+
+# Definición del volumen con nombre al final del archivo
+volumes:
+  time_node_modules:
