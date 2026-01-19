@@ -1,0 +1,17 @@
+:root {
+    /* [Layer 0] - Punto de absorción total. */
+    --base-abismo: #020617;
+
+    /* [Layer 1] - Plano de proyección principal. */
+    --base-superficie: #0f172a;
+
+    /* [Layer 2] - Plano de elevación. */
+    --base-elevacion: #1e293b;
+
+    /* [Accent] - Frecuencia de atención. */
+    /* --base-identidad: #2563eb; */
+    --base-identidad: #ff0010;
+
+    /* [Source] - Fuente de emisión lumínica. */
+    --base-iluminacion: #f8fafc;
+}

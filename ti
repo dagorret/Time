@@ -8,10 +8,14 @@ shift # Elimina el primer argumento para pasar el resto al comando
 
 case $COMMAND in
   sh)
-    docker compose run --rm time-ui sh
+    # Intenta entrar al contenedor si está vivo, si no, lo crea con bash
+    docker compose exec time-ui bash 2>/dev/null || docker compose run --rm time-ui bash
     ;;
   install)
     docker compose run --rm time-ui npm install "$@"
+    ;;
+  uninstall)
+    docker compose run --rm time-ui npm uninstall "$@"
     ;;
   build)
     docker compose run --rm time-ui npm run build
@@ -21,14 +25,13 @@ case $COMMAND in
     docker compose run --rm --service-ports time-ui npm run dev -- --host
     ;;
   preview)
-    # --service-ports activa el mapeo de puertos definido en docker-compose.yml
     docker compose run --rm --service-ports time-ui npm run preview -- --host
     ;;
   pack)
     docker compose run --rm time-ui npm pack
     ;;
   *)
-    echo "Uso: ./ti {sh|install|build|dev|preview|pack}"
+    echo "Uso: ./ti {sh|install|uninstall|build|dev|preview|pack}"
     exit 1
     ;;
 esac

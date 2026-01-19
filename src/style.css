@@ -1,1 +1,50 @@
 @import "tailwindcss";
+
+@theme {
+    /* --- [CORE] VARIABLES BASE (DEFAULT DARK) --- */
+    --base-abismo: #020617;
+    --base-superficie: #0f172a;
+    --base-elevacion: #1e293b;
+    --base-identidad: #2563eb;
+    --base-iluminacion: #f8fafc;
+
+    /* --- [MAPEO SEMÁNTICO] --- */
+    /* Estos nombres son los que usas en el HTML (ej: bg-ui-bg-deep) */
+    --color-ui-bg-deep: var(--base-abismo);
+    --color-ui-bg-base: var(--base-superficie);
+    --color-ui-bg-panel: var(--base-elevacion);
+
+    --color-tx-high: var(--base-iluminacion);
+    --color-tx-med: color-mix(in srgb, var(--base-iluminacion), transparent 40%);
+    --color-tx-low: color-mix(in srgb, var(--base-iluminacion), transparent 70%);
+
+    --color-border-thin: color-mix(in srgb, var(--base-iluminacion), transparent 85%);
+    --color-border-heavy: color-mix(in srgb, var(--base-iluminacion), transparent 60%);
+
+    --color-int-primary: var(--base-identidad);
+    --color-int-hover: color-mix(in srgb, var(--base-identidad), white 20%);
+}
+
+/* --- [MODO LIGHT] RE-DEFINICIÓN DE BASES --- */
+:root:not(.dark) {
+    --base-abismo: #ffffff;      /* Blanco */
+    --base-superficie: #f1f5f9;  /* Gris muy claro */
+    --base-elevacion: #e2e8f0;   /* Gris medio */
+    --base-identidad: #2563eb;   /* El azul se mantiene */
+    --base-iluminacion: #0f172a; /* Texto oscuro */
+}
+
+/* --- [BASE & RESET] --- */
+@layer base {
+    html, body {
+        height: 100%;
+        margin: 0;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    body {
+        background-color: var(--base-abismo) !important;
+        color: var(--base-iluminacion) !important;
+        font-family: 'Inter', system-ui, sans-serif;
+    }
+}
