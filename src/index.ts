@@ -1,5 +1,12 @@
-// src/index.ts
-import './style.css'; // <--- Importante: Aquí es donde Vite "ve" el CSS
+import TiButton from './components/TiButton.vue';
+import TiInput from './components/TiInput.vue';
+import './style.css'; // Importante para que viaje el CSS de Tailwind
 
-// Exportas tus componentes (cuando los tengamos)
-// export { default as Button } from './components/ui/button/Button.vue';
+export { TiButton, TiInput };
+
+export default {
+  install: (app: any) => {
+    app.component('TiButton', TiButton);
+    app.component('TiInput', TiInput);
+  }
+};

@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Script de acceso rápido para el ecosistema Time
+# Uso: ./ti [comando]
+
+COMMAND=$1
+shift # Elimina el primer argumento para pasar el resto al comando
+
+case $COMMAND in
+  sh)
+    docker compose run --rm time-ui sh
+    ;;
+  install)
+    docker compose run --rm time-ui npm install "$@"
+    ;;
+  build)
+    docker compose run --rm time-ui npm run build
+    ;;
+  dev)
+    docker compose run --rm time-ui npm run dev -- --host
+    ;;
+  preview)
+    docker compose run --rm time-ui npm run preview -- --host
+    ;;
+  pack)
+    docker compose run --rm time-ui npm pack
+    ;;
+  *)
+    echo "Uso: ./ti {sh|install|build|dev|preview|pack}"
+    exit 1
+    ;;
+esac
