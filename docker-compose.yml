@@ -6,20 +6,18 @@ services:
       args:
         - USER_ID=1000
     container_name: time-lab
-    # Entramos como el usuario time (ID 1000)
+    # ESTO ES LO QUE ARREGLA EL PROBLEMA EN UBUNTU
+    # network_mode: "host" 
     user: "time"
     volumes:
-      # Sincroniza tu código fuente (Host -> Contenedor)
       - .:/app
-      # Volumen con nombre para persistir las dependencias y aislarlas del host
       - time_node_modules:/app/node_modules
+    # La sección 'ports' se elimina o se comenta porque ya no es necesaria
     ports:
       - "5173:5173"
     environment:
       - NODE_ENV=development
-    # Esto asegura que si el contenedor cae por un error leve, intente subir solo
     restart: unless-stopped
 
-# Definición del volumen con nombre al final del archivo
 volumes:
   time_node_modules:

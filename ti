@@ -17,10 +17,12 @@ case $COMMAND in
     docker compose run --rm time-ui npm run build
     ;;
   dev)
-    docker compose run --rm time-ui npm run dev -- --host
+    # --service-ports activa el mapeo de puertos definido en docker-compose.yml
+    docker compose run --rm --service-ports time-ui npm run dev -- --host
     ;;
   preview)
-    docker compose run --rm time-ui npm run preview -- --host
+    # --service-ports activa el mapeo de puertos definido en docker-compose.yml
+    docker compose run --rm --service-ports time-ui npm run preview -- --host
     ;;
   pack)
     docker compose run --rm time-ui npm pack

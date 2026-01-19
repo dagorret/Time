@@ -1,29 +1,27 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import tailwindcss from '@tailwindcss/vite'
-import { resolve } from 'path'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [
     vue(),
     tailwindcss()
   ],
-  build: {
-    lib: {
-      // Este es el archivo que exporta tus TiButton, TiInput, etc.
-      entry: resolve(__dirname, 'src/index.ts'),
-      name: 'TimeUI',
-      // El nombre de los archivos que se generarán
-      fileName: 'time-ui'
+  server: {
+    host: '0.0.0.0', // Permite conexiones externas al contenedor
+    port: 5173,
+    strictPort: true,
+    watch: {
+      usePolling: true,
+      interval: 100,
     },
-    rollupOptions: {
-      // IMPORTANTE: No metemos Vue dentro de la librería
-      external: ['vue'],
-      output: {
-        globals: {
-          vue: 'Vue'
-        }
-      }
-    }
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost',
+      clientPort: 5173,
+    },
+  },
+  optimizeDeps: {
+    exclude: ['@tailwindcss/node']
   }
-})
+});
