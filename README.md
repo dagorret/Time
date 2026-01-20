@@ -10,7 +10,7 @@ Se ha consolidado el núcleo del sistema bajo estándares de "Grado Industrial",
 - **Framework:** Vue 3.5+ (Script Setup).
 - **Estilos:** Tailwind CSS v4.0 (Motor de alto rendimiento con tokens nativos).
 - **Componentes:** PrimeVue (Customized) + Lucide Icons.
-- **Entorno:** Dockerizado sobre **Arch Linux (Bleeding Edge)** para asegurar versiones de Node.js 23.x nativas.
+- **Entorno:** Dockerizado sobre ** Debian** para asegurar versiones de Node.js 23.x nativas.
 
 ### Innovaciones Implementadas:
 - **Sistema Bimodal:** Arquitectura de colores semántica (Abismo, Superficie, Elevación) con soporte nativo para `Dark` y `Light` mode mediante variables CSS puras.
