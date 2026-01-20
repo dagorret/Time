@@ -2,28 +2,41 @@
 import { ref, onMounted } from 'vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import { Loader2 } from 'lucide-vue-next';
+import InputText from 'primevue/inputtext';
+import IconField from 'primevue/iconfield';
+import InputIcon from 'primevue/inputicon';
+import { Loader2, Search } from 'lucide-vue-next';
 
-// 1. Configuración de datos genéricos
 const loading = ref(false);
 const totalRecords = ref(1000000);
 const items = ref([]);
+let debounceTimer: any = null; // Variable para el control del tiempo
+
+const filters = ref({
+  global: { value: null, matchMode: 'contains' }
+});
 
 const loadLazyData = (event: any) => {
   loading.value = true;
 
-  // Simulación de fetch a API
   setTimeout(() => {
     const data = [];
     const start = event.first || 0;
     const rows = event.rows || 10;
+    const searchTerm = event.filters?.global?.value?.toLowerCase() || '';
+
+    if (searchTerm) {
+      totalRecords.value = 500;
+    } else {
+      totalRecords.value = 1000000;
+    }
 
     for (let i = 0; i < rows; i++) {
       const index = start + i;
       data.push({
         id: index,
         key: `KEY-${String(index).padStart(6, '0')}`,
-        label: `Data Point ${index}`,
+        label: searchTerm ? `Result for "${searchTerm}" #${index}` : `Data Point ${index}`,
         category: `Category ${(index % 5) + 1}`,
         status: index % 4 === 0 ? 'Active' : 'Process'
       });
@@ -35,12 +48,24 @@ const loadLazyData = (event: any) => {
 };
 
 onMounted(() => {
-  // Inicializamos con 10 filas por defecto
-  loadLazyData({ first: 0, rows: 10 });
+  loadLazyData({ first: 0, rows: 10, filters: filters.value });
 });
 
+// --- EL MOTOR DEL DEBOUNCE ---
 const onLazyEvent = (event: any) => {
-  loadLazyData(event);
+  // 1. Limpiamos el temporizador anterior si el usuario sigue escribiendo
+  if (debounceTimer) clearTimeout(debounceTimer);
+
+  // 2. Si el evento es un cambio de página o sort, cargamos de inmediato
+  if (event.type !== 'input') {
+    loadLazyData(event);
+    return;
+  }
+
+  // 3. Si es búsqueda (input), esperamos 300ms
+  debounceTimer = setTimeout(() => {
+    loadLazyData(event);
+  }, 800);
 };
 </script>
 
@@ -51,10 +76,23 @@ const onLazyEvent = (event: any) => {
         <h2 class="text-xl font-bold tracking-tight text-ui-text-base">System Logs</h2>
         <p class="text-sm text-ui-text-muted">Analytic engine: {{ totalRecords.toLocaleString() }} entries indexed.</p>
       </div>
+
+      <IconField iconPosition="left">
+        <InputIcon>
+          <Search :class="debounceTimer ? 'text-int-primary animate-pulse' : 'text-ui-text-low'" :size="16" />
+        </InputIcon>
+        <InputText
+            v-model="filters['global'].value"
+            @input="(e) => onLazyEvent({ ...filters, type: 'input', first: 0, rows: 10, filters: filters })"
+            placeholder="Search index..."
+            class="ti-input-search"
+        />
+      </IconField>
     </div>
 
     <div class="bg-ui-bg-panel border border-ui-border rounded-xl shadow-sm overflow-hidden relative">
       <DataTable
+          v-model:filters="filters"
           :value="items"
           lazy
           paginator
@@ -82,10 +120,10 @@ const onLazyEvent = (event: any) => {
         <Column field="status" header="Status" style="width: 20%">
           <template #body="{ data }">
             <div class="flex items-center gap-2">
-              <div :class="data.status === 'Active' ? 'bg-green-500' : 'bg-blue-500'" class="w-2 h-2 rounded-full"></div>
-              <span :class="data.status === 'Active' ? 'text-green-500' : 'text-blue-500'" class="font-medium text-xs uppercase tracking-widest">
-                    {{ data.status }}
-                </span>
+              <div :class="data.status === 'Active' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.4)]'" class="w-1.5 h-1.5 rounded-full"></div>
+              <span :class="data.status === 'Active' ? 'text-green-500' : 'text-blue-500'" class="font-medium text-[10px] uppercase tracking-widest">
+                {{ data.status }}
+              </span>
             </div>
           </template>
         </Column>
@@ -97,28 +135,12 @@ const onLazyEvent = (event: any) => {
 <style scoped>
 @reference "../style.css";
 
-.p-datatable {
-  @apply !bg-transparent !text-ui-text-base;
+.ti-input-search {
+  @apply !bg-ui-bg-base/50 !border-ui-border !text-ui-text-base !text-xs !py-2 !pl-10 !rounded-lg !transition-all !w-64;
 }
-</style>
 
-<style>
-@reference "../style.css";
-
-/* Estilos de PrimeVue adaptados a la jerarquía de Carlos */
-.p-datatable-thead > tr > th {
-  @apply !bg-ui-bg-base/30 !text-ui-text-muted !border-ui-border !text-[10px] !uppercase !tracking-[0.2em] !font-black !py-4 !px-6;
-}
-.p-datatable-tbody > tr {
-  @apply !bg-transparent !border-ui-border hover:!bg-int-primary/5 !transition-all;
-}
-.p-datatable-tbody > tr > td {
-  @apply !border-ui-border !py-4 !px-6 !text-sm;
-}
-.p-paginator {
-  @apply !bg-ui-bg-panel/50 !border-t !border-ui-border !py-2 !text-xs !text-ui-text-low;
-}
-.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
-  @apply !bg-int-primary !text-white !rounded-lg !scale-90;
+.ti-input-search:focus {
+  @apply !ring-1 !ring-int-primary !border-int-primary !bg-ui-bg-base !w-80;
+  box-shadow: 0 0 15px rgba(37, 99, 235, 0.1);
 }
 </style>
