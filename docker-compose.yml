@@ -14,7 +14,7 @@ services:
       - time_node_modules:/app/node_modules
     # La sección 'ports' se elimina o se comenta porque ya no es necesaria
     ports:
-      - "5173:5173"
+      - "5188:5188"
     environment:
       - NODE_ENV=development
     restart: unless-stopped

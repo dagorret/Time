@@ -7,65 +7,63 @@ import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import { Loader2, Search } from 'lucide-vue-next';
 
+const props = defineProps({
+  url: {
+    type: String,
+    default: 'http://localhost:8090/api/ti-table'
+  },
+  rows: {
+    type: Number,
+    default: 15
+  }
+});
+
 const loading = ref(false);
-const totalRecords = ref(1000000);
+const totalRecords = ref(0);
 const items = ref([]);
-let debounceTimer: any = null; // Variable para el control del tiempo
+let debounceTimer: any = null;
 
 const filters = ref({
   global: { value: null, matchMode: 'contains' }
 });
 
-const loadLazyData = (event: any) => {
+const loadLazyData = async (event: any) => {
   loading.value = true;
+  try {
+    const page = Math.floor(event.first / event.rows) + 1;
+    const search = event.filters?.global?.value || '';
+    
+    const queryParams = new URLSearchParams({
+      page: page.toString(),
+      rows: event.rows.toString(),
+      search: search
+    });
 
-  setTimeout(() => {
-    const data = [];
-    const start = event.first || 0;
-    const rows = event.rows || 10;
-    const searchTerm = event.filters?.global?.value?.toLowerCase() || '';
+    const response = await fetch(`${props.url}?${queryParams}`);
+    const result = await response.json();
 
-    if (searchTerm) {
-      totalRecords.value = 500;
-    } else {
-      totalRecords.value = 1000000;
-    }
-
-    for (let i = 0; i < rows; i++) {
-      const index = start + i;
-      data.push({
-        id: index,
-        key: `KEY-${String(index).padStart(6, '0')}`,
-        label: searchTerm ? `Result for "${searchTerm}" #${index}` : `Data Point ${index}`,
-        category: `Category ${(index % 5) + 1}`,
-        status: index % 4 === 0 ? 'Active' : 'Process'
-      });
-    }
-
-    items.value = data;
+    items.value = result.data;
+    totalRecords.value = result.total;
+  } catch (error) {
+    console.error("Error cargando datos:", error);
+  } finally {
     loading.value = false;
-  }, 350);
+  }
 };
 
 onMounted(() => {
-  loadLazyData({ first: 0, rows: 10, filters: filters.value });
+  loadLazyData({ first: 0, rows: props.rows, filters: filters.value });
 });
 
-// --- EL MOTOR DEL DEBOUNCE ---
 const onLazyEvent = (event: any) => {
-  // 1. Limpiamos el temporizador anterior si el usuario sigue escribiendo
   if (debounceTimer) clearTimeout(debounceTimer);
-
-  // 2. Si el evento es un cambio de página o sort, cargamos de inmediato
   if (event.type !== 'input') {
     loadLazyData(event);
     return;
   }
-
-  // 3. Si es búsqueda (input), esperamos 300ms
   debounceTimer = setTimeout(() => {
     loadLazyData(event);
-  }, 800);
+  }, 600);
 };
 </script>
 
@@ -74,17 +72,17 @@ const onLazyEvent = (event: any) => {
     <div class="flex items-center justify-between px-2">
       <div>
         <h2 class="text-xl font-bold tracking-tight text-ui-text-base">System Logs</h2>
-        <p class="text-sm text-ui-text-muted">Analytic engine: {{ totalRecords.toLocaleString() }} entries indexed.</p>
+        <p class="text-sm text-ui-text-muted">Total: {{ totalRecords.toLocaleString() }} registros.</p>
       </div>
 
       <IconField iconPosition="left">
         <InputIcon>
-          <Search :class="debounceTimer ? 'text-int-primary animate-pulse' : 'text-ui-text-low'" :size="16" />
+          <Search :class="loading ? 'text-int-primary animate-pulse' : 'text-ui-text-low'" :size="16" />
         </InputIcon>
         <InputText
             v-model="filters['global'].value"
-            @input="(e) => onLazyEvent({ ...filters, type: 'input', first: 0, rows: 10, filters: filters })"
-            placeholder="Search index..."
+            @input="(e) => onLazyEvent({ type: 'input', first: 0, rows: props.rows, filters: filters })"
+            placeholder="Search logs..."
             class="ti-input-search"
         />
       </IconField>
@@ -96,7 +94,7 @@ const onLazyEvent = (event: any) => {
           :value="items"
           lazy
           paginator
-          :rows="10"
+          :rows="props.rows"
           :totalRecords="totalRecords"
           :loading="loading"
           @page="onLazyEvent"
@@ -114,33 +112,29 @@ const onLazyEvent = (event: any) => {
           </div>
         </template>
 
-        <Column field="key" header="Reference" sortable style="width: 20%"></Column>
-        <Column field="label" header="Resource Name" sortable style="width: 35%"></Column>
-        <Column field="category" header="Group" style="width: 25%"></Column>
-        <Column field="status" header="Status" style="width: 20%">
+        <Column field="id" header="ID" style="width: 10%"></Column>
+        <Column field="event_name" header="Evento" style="width: 50%"></Column>
+        <Column field="status" header="Estado" style="width: 15%">
           <template #body="{ data }">
-            <div class="flex items-center gap-2">
-              <div :class="data.status === 'Active' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]' : 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.4)]'" class="w-1.5 h-1.5 rounded-full"></div>
-              <span :class="data.status === 'Active' ? 'text-green-500' : 'text-blue-500'" class="font-medium text-[10px] uppercase tracking-widest">
-                {{ data.status }}
-              </span>
-            </div>
+            <span class="px-2 py-1 rounded text-[10px] font-bold uppercase" 
+                  :class="data.status === 'success' ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'">
+              {{ data.status }}
+            </span>
           </template>
         </Column>
+        <Column field="started_at" header="Fecha" style="width: 25%"></Column>
       </DataTable>
     </div>
   </div>
 </template>
 
 <style scoped>
-@reference "../style.css";
-
 .ti-input-search {
-  @apply !bg-ui-bg-base/50 !border-ui-border !text-ui-text-base !text-xs !py-2 !pl-10 !rounded-lg !transition-all !w-64;
-}
-
-.ti-input-search:focus {
-  @apply !ring-1 !ring-int-primary !border-int-primary !bg-ui-bg-base !w-80;
-  box-shadow: 0 0 15px rgba(37, 99, 235, 0.1);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: white;
+  padding: 0.5rem 1rem 0.5rem 2.5rem;
+  border-radius: 0.5rem;
+  width: 250px;
 }
 </style>
