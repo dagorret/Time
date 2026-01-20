@@ -8,30 +8,31 @@
     --base-identidad: #2563eb;
     --base-iluminacion: #f8fafc;
 
-    /* --- [MAPEO SEMÁNTICO] --- */
-    /* Estos nombres son los que usas en el HTML (ej: bg-ui-bg-deep) */
+    /* --- [MAPEO SEMÁNTICO DE COLORES] --- */
     --color-ui-bg-deep: var(--base-abismo);
     --color-ui-bg-base: var(--base-superficie);
     --color-ui-bg-panel: var(--base-elevacion);
 
-    --color-tx-high: var(--base-iluminacion);
-    --color-tx-med: color-mix(in srgb, var(--base-iluminacion), transparent 40%);
-    --color-tx-low: color-mix(in srgb, var(--base-iluminacion), transparent 70%);
+    /* --- [TEXTO] --- */
+    --color-ui-text-base: var(--base-iluminacion);
+    --color-ui-text-muted: color-mix(in srgb, var(--base-iluminacion), transparent 40%);
+    --color-ui-text-low: color-mix(in srgb, var(--base-iluminacion), transparent 70%);
 
-    --color-border-thin: color-mix(in srgb, var(--base-iluminacion), transparent 85%);
-    --color-border-heavy: color-mix(in srgb, var(--base-iluminacion), transparent 60%);
+    /* --- [BORDES] --- */
+    --color-ui-border: color-mix(in srgb, var(--base-iluminacion), transparent 85%);
 
+    /* --- [INTERACCIÓN] --- */
     --color-int-primary: var(--base-identidad);
     --color-int-hover: color-mix(in srgb, var(--base-identidad), white 20%);
 }
 
 /* --- [MODO LIGHT] RE-DEFINICIÓN DE BASES --- */
 :root:not(.dark) {
-    --base-abismo: #ffffff;      /* Blanco */
-    --base-superficie: #f1f5f9;  /* Gris muy claro */
-    --base-elevacion: #e2e8f0;   /* Gris medio */
-    --base-identidad: #2563eb;   /* El azul se mantiene */
-    --base-iluminacion: #0f172a; /* Texto oscuro */
+    --base-abismo: #ffffff;
+    --base-superficie: #f1f5f9;
+    --base-elevacion: #e2e8f0;
+    --base-identidad: #2563eb;
+    --base-iluminacion: #0f172a;
 }
 
 /* --- [BASE & RESET] --- */
@@ -39,12 +40,14 @@
     html, body {
         height: 100%;
         margin: 0;
+        /* Esto hace que el cambio de color sea suave y no un flash */
         transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     body {
-        background-color: var(--base-abismo) !important;
-        color: var(--base-iluminacion) !important;
+        /* Eliminamos los !important para que el Modo Light pueda entrar */
+        background-color: var(--base-abismo);
+        color: var(--base-iluminacion);
         font-family: 'Inter', system-ui, sans-serif;
     }
 }

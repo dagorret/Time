@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     vim \
     && curl -fsSL https://deb.nodesource.com/setup_23.x | bash - \
     && apt-get install -y nodejs \
+    && apt-get install -y npm \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Ahora sí creamos nuestro usuario 'time' sin conflictos
@@ -25,6 +26,9 @@ RUN chown -R time:time /app
 
 USER time
 
+ENV PATH="/app/node_modules/.bin:${PATH}"
+
 FROM base AS development
 # Vite necesita este comando para arrancar
 CMD ["npm", "run", "dev"]
+

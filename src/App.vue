@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import TiLayout from './components/TiLayout.vue'
 import TiButton from './components/TiButton.vue'
+import TiTableLazy from './components/TiTableLazy.vue';
 
 // Función opcional para probar el cambio de modo desde la consola
 const toggleMode = () => {
@@ -59,6 +60,11 @@ const toggleMode = () => {
         <p class="text-tx-low text-xs mt-2">Énfasis Bajo (Metadatos o deshabilitado)</p>
       </div>
 
+    </div>
+
+    <div class="mt-8 px-4">
+      <h3 class="text-tx-high font-bold mb-4">Vista de Datos Masivos</h3>
+      <TiTableLazy />
     </div>
   </TiLayout>
 </template>

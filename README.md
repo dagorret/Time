@@ -1,48 +1,50 @@
 # 🚀 TIME OS - Documentación de Arquitectura y Roadmap
 
-Este documento centraliza la visión técnica, el estado actual del desarrollo y las tareas pendientes para el sistema **TIME**.
+Este documento centraliza la visión técnica, el estado actual del desarrollo y las tareas pendientes para el ecosistema **TIME**, una interfaz de alto rendimiento orientada a la gestión masiva de datos.
 
-## 🏗️ Estado de la Arquitectura (Layout Maestro)
+## 🏗️ Estado de la Arquitectura (V3 Core)
 
-Se ha implementado el componente base `TiLayout.vue` bajo estándares de "Grado Industrial". El sistema utiliza **Vue 3 (Composition API)** y **Tailwind CSS 4**.
+Se ha consolidado el núcleo del sistema bajo estándares de "Grado Industrial", utilizando **Vue 3 (Composition API)** y la potencia de **Tailwind CSS 4**.
 
-### Estructura de Componentes:
-- **Contenedor Raíz:** Controla el fondo base (`#0f172a`) y el flujo vertical.
-- **Header:** Barra fija superior (`sticky`) con desenfoque de fondo (`backdrop-blur`), logo dinámico y perfil de usuario.
-- **Cuerpo Dinámico:** Un contenedor flexible que organiza el Sidebar y el Main Content.
-- **Sidebar (Navegación):** Sistema colapsable animado mediante la variable reactiva `isSidebarOpen`. Implementa `slots` para inyección de menús.
-- **Main Content:** Área de trabajo con scroll independiente y ancho máximo controlado (`max-w-7xl`) para legibilidad.
+### Stack Tecnológico:
+- **Framework:** Vue 3.5+ (Script Setup).
+- **Estilos:** Tailwind CSS v4.0 (Motor de alto rendimiento con tokens nativos).
+- **Componentes:** PrimeVue (Customized) + Lucide Icons.
+- **Entorno:** Dockerizado sobre **Arch Linux (Bleeding Edge)** para asegurar versiones de Node.js 23.x nativas.
 
----
-
-## 🛠️ Lecciones Técnicas (Docker & Entorno)
-
-- **Persistencia en el "Estado del Arte":** Ante fallos en el despliegue, verificar siempre la coherencia de los scripts de orquestación.
-- **Docker Fix:** Se identificó que el uso de `run` en lugar de `up` en ciertos scripts de automatización generaba conflictos en la creación del firewall y la red de contenedores.
-- **Filosofía de Seguridad:** La seguridad debe gestionarse mediante permisos y privilegios mínimos (sandboxing), no mediante la restricción total de la integración.
+### Innovaciones Implementadas:
+- **Sistema Bimodal:** Arquitectura de colores semántica (Abismo, Superficie, Elevación) con soporte nativo para `Dark` y `Light` mode mediante variables CSS puras.
+- **TiTableLazy:** Motor de renderizado para tablas masivas con soporte de carga diferida (Lazy Loading) optimizado para datasets de +1,000,000 de registros.
+- **Layout Adaptativo:** Header con `backdrop-blur` y Sidebar colapsable con persistencia de estado.
 
 ---
 
-## 📋 TODO-INMEDIATO (Próximos Pasos)
+## 🛠️ Infraestructura & Docker (Lecciones Aprendidas)
 
-### 1. Design System (Prioridad Alta)
-- [ ] **Tokenización de Colores:** Mover colores hardcodeados (como el azul oscuro `#0f172a`) a variables de Tailwind o CSS puro para permitir cambios globales instantáneos.
-- [ ] **Configuración de Fuentes:** Asegurar que la familia `font-sans` esté correctamente vinculada en el archivo de configuración.
-
-### 2. Navegación y Rutas
-- [ ] **Vue Router:** Configurar el enrutador oficial para que el componente `TiLayout` sea la base de todas las vistas.
-- [ ] **Active States:** Vincular la propiedad `active` de los `navItems` con la ruta actual de la URL automáticamente.
-
-### 3. Módulos "Lucy" (Gestión de Datos)
-- [ ] **TiTable.vue:** Crear el componente de tabla maestro para la visualización de datos administrativos.
-- [ ] **Data Fetching:** Establecer el flujo de información desde el backend hacia los componentes de la interfaz.
-
-### 4. Perfil y Estado Global
-- [ ] **Store de Usuario:** Implementar (Pinia o estado reactivo) para que el nombre del usuario y el rol en el Header sean reales y no estáticos.
+- **Consistencia de Entorno:** Se migró de Debian Slim a **Arch Linux** en el contenedor de desarrollo para garantizar el acceso a Node 23 y NPM 10 sin fricciones de repositorios externos.
+- **Optimización de Compilación:** Uso de la directiva `@reference` de Tailwind v4 en componentes SFC para evitar la duplicación de tokens y acelerar el HMR (Hot Module Replacement).
+- **Fix de Orquestación:** Resolución de conflictos de red y permisos de usuario (`time:1000`) dentro del contenedor para garantizar que `node_modules` mantenga la integridad de permisos en el host Linux.
 
 ---
 
-## 📅 Hito Próximo: 28 de Enero
-*Revisión de consistencia del sistema antes de la pausa por compromisos médicos.*
+## 📋 Roadmap & Tareas Pendientes (TODO)
 
-> **Nota del Arquitecto:** "Si falla no puede detener mi arte, lo arreglo o modifico."
+### 1. Design System (En Progreso)
+- [x] **Tokenización Semántica:** Colores mapeados a variables base (Abismo, Identidad, Iluminación).
+- [ ] **Tipografía Dinámica:** Implementar escala tipográfica fluida basada en variables de paso.
+
+### 2. Integración de Datos
+- [x] **Virtual Scrolling / Lazy Load:** Implementado en `TiTableLazy`.
+- [ ] **Backend Link:** Conectar los eventos de la tabla (`onPage`, `onSort`) con el endpoint de Laravel mediante Axios o Fetch.
+- [ ] **Filtros Globales:** Implementar búsqueda reactiva con debouncing para no saturar el servidor.
+
+### 3. Perfil y Estado Global
+- [ ] **Pinia Store:** Centralizar el estado de sesión del usuario y las preferencias de tema.
+- [ ] **Active Router:** Vincular automáticamente la navegación del Sidebar con `vue-router`.
+
+---
+
+## 📅 Próximo Hito: 28 de Enero
+*Finalización del flujo CRUD básico y estabilización del motor de tablas antes de la transición de fase.*
+
+> **Nota del Arquitecto:** "La tecnología es el lienzo; si el pincel falla (Docker), se cambia el pincel, pero la obra (Lucy) continúa. La excelencia no es negociable."

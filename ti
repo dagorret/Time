@@ -8,27 +8,28 @@ shift # Elimina el primer argumento para pasar el resto al comando
 
 case $COMMAND in
   sh)
-    # Intenta entrar al contenedor si está vivo, si no, lo crea con bash
-    docker compose exec time-ui bash 2>/dev/null || docker compose run --rm time-ui bash
+    # "$@" permite pasar comandos directos: ./ti sh -c "node -v"
+    docker compose exec time-ui bash "$@" 2>/dev/null || docker compose run --rm time-ui bash "$@"
     ;;
   install)
+    # Permite ./ti install lucide-vue-next
     docker compose run --rm time-ui npm install "$@"
     ;;
   uninstall)
     docker compose run --rm time-ui npm uninstall "$@"
     ;;
   build)
-    docker compose run --rm time-ui npm run build
+    docker compose run --rm time-ui npm run build "$@"
     ;;
   dev)
-    # --service-ports activa el mapeo de puertos definido en docker-compose.yml
-    docker compose run --rm --service-ports time-ui npm run dev -- --host
+    # Agregamos "$@" al final por si quieres pasarle un puerto distinto o flags de vite
+    docker compose run --rm --service-ports time-ui npm run dev -- --host "$@"
     ;;
   preview)
-    docker compose run --rm --service-ports time-ui npm run preview -- --host
+    docker compose run --rm --service-ports time-ui npm run preview -- --host "$@"
     ;;
   pack)
-    docker compose run --rm time-ui npm pack
+    docker compose run --rm time-ui npm pack "$@"
     ;;
   *)
     echo "Uso: ./ti {sh|install|uninstall|build|dev|preview|pack}"
