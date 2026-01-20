@@ -3,138 +3,135 @@ import { ref, onMounted } from 'vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import InputText from 'primevue/inputtext';
-import IconField from 'primevue/iconfield';
-import InputIcon from 'primevue/inputicon';
 import { Loader2, Search } from 'lucide-vue-next';
 
 const props = defineProps({
-  url: {
-    type: String,
-    default: 'http://localhost:8090/api/ti-table'
-  },
-  rows: {
-    type: Number,
-    default: 15
-  }
+  url: { type: String, required: true },
+  rows: { type: Number, default: 15 }
 });
 
 const loading = ref(false);
 const totalRecords = ref(0);
 const items = ref([]);
-let debounceTimer: any = null;
+const serverSchema = ref([]); 
+const filters = ref({ global: { value: null } });
 
-const filters = ref({
-  global: { value: null, matchMode: 'contains' }
-});
-
-const loadLazyData = async (event: any) => {
+const loadLazyData = async (event?: any) => {
   loading.value = true;
   try {
-    const page = Math.floor(event.first / event.rows) + 1;
-    const search = event.filters?.global?.value || '';
-    
-    const queryParams = new URLSearchParams({
+    const page = event?.first ? Math.floor(event.first / (event.rows || props.rows)) + 1 : 1;
+    const query = new URLSearchParams({
       page: page.toString(),
-      rows: event.rows.toString(),
-      search: search
+      rows: (event?.rows || props.rows).toString(),
+      search: filters.value.global.value || '',
+      sortField: event?.sortField || 'id',
+      sortOrder: event?.sortOrder?.toString() || '1'
     });
-
-    const response = await fetch(`${props.url}?${queryParams}`);
+    const response = await fetch(`${props.url}?${query}`);
     const result = await response.json();
-
-    items.value = result.data;
-    totalRecords.value = result.total;
-  } catch (error) {
-    console.error("Error cargando datos:", error);
+    if (result?.schema) serverSchema.value = result.schema;
+    items.value = result.data || [];
+    totalRecords.value = result.total || 0;
+  } catch (e) {
+    console.error("TIME Sync Error:", e);
   } finally {
     loading.value = false;
   }
 };
 
-onMounted(() => {
-  loadLazyData({ first: 0, rows: props.rows, filters: filters.value });
-});
-
-const onLazyEvent = (event: any) => {
-  if (debounceTimer) clearTimeout(debounceTimer);
-  if (event.type !== 'input') {
-    loadLazyData(event);
-    return;
-  }
-  debounceTimer = setTimeout(() => {
-    loadLazyData(event);
-  }, 600);
-};
+onMounted(() => loadLazyData());
 </script>
 
 <template>
-  <div class="space-y-4">
-    <div class="flex items-center justify-between px-2">
-      <div>
-        <h2 class="text-xl font-bold tracking-tight text-ui-text-base">System Logs</h2>
-        <p class="text-sm text-ui-text-muted">Total: {{ totalRecords.toLocaleString() }} registros.</p>
-      </div>
-
-      <IconField iconPosition="left">
-        <InputIcon>
-          <Search :class="loading ? 'text-int-primary animate-pulse' : 'text-ui-text-low'" :size="16" />
-        </InputIcon>
-        <InputText
-            v-model="filters['global'].value"
-            @input="(e) => onLazyEvent({ type: 'input', first: 0, rows: props.rows, filters: filters })"
-            placeholder="Search logs..."
-            class="ti-input-search"
-        />
-      </IconField>
+  <div class="ti-container">
+    <div class="flex justify-between items-end px-4 mb-4">
+       <div class="flex flex-col">
+           <span class="text-[9px] text-ui-text-low uppercase font-black tracking-[0.3em] mb-1">System Audit</span>
+           <h2 class="text-lg font-black text-ui-text-base tracking-tighter uppercase">Activity Logs</h2>
+       </div>
+       <div class="relative group">
+          <Search class="absolute left-3 top-1/2 -translate-y-1/2 text-ui-text-low z-10" :size="14" />
+          <InputText v-model="filters.global.value" @keyup.enter="loadLazyData()" placeholder="Search..." class="ti-input" />
+       </div>
     </div>
 
-    <div class="bg-ui-bg-panel border border-ui-border rounded-xl shadow-sm overflow-hidden relative">
+    <div class="ti-card-light">
       <DataTable
-          v-model:filters="filters"
+          v-if="serverSchema.length > 0"
           :value="items"
-          lazy
-          paginator
-          :rows="props.rows"
-          :totalRecords="totalRecords"
-          :loading="loading"
-          @page="onLazyEvent"
-          @sort="onLazyEvent"
-          @filter="onLazyEvent"
-          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-          currentPageReportTemplate="{first} - {last} of {totalRecords}"
-          :rowsPerPageOptions="[10, 25, 50, 100]"
+          lazy paginator :rows="props.rows" :totalRecords="totalRecords" :loading="loading"
+          @page="loadLazyData" @sort="loadLazyData"
           class="p-datatable-sm"
-          dataKey="id"
       >
         <template #loading>
-          <div class="flex items-center justify-center bg-ui-bg-panel/60 absolute inset-0 z-50 backdrop-blur-sm">
-            <Loader2 class="animate-spin text-int-primary" :size="32" />
-          </div>
+            <div class="ti-overlay-light">
+                <Loader2 class="animate-spin text-int-primary" :size="32" />
+            </div>
         </template>
 
-        <Column field="id" header="ID" style="width: 10%"></Column>
-        <Column field="event_name" header="Evento" style="width: 50%"></Column>
-        <Column field="status" header="Estado" style="width: 15%">
-          <template #body="{ data }">
-            <span class="px-2 py-1 rounded text-[10px] font-bold uppercase" 
-                  :class="data.status === 'success' ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'">
-              {{ data.status }}
-            </span>
-          </template>
+        <Column v-for="col in serverSchema" :key="col.field" :field="col.field" :header="col.header" :sortable="col.sortable">
+            <template #body="{ data, field }">
+               <span class="ti-cell-dark">
+                  {{ data[field] }}
+               </span>
+            </template>
         </Column>
-        <Column field="started_at" header="Fecha" style="width: 25%"></Column>
       </DataTable>
+
+      <div v-else class="ti-sync-light">
+          <Loader2 class="animate-spin text-int-primary" :size="24" />
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.ti-input-search {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: white;
-  padding: 0.5rem 1rem 0.5rem 2.5rem;
-  border-radius: 0.5rem;
-  width: 250px;
+@reference "../style.css";
+
+/* Input de búsqueda: Mantenemos el estilo oscuro para que contraste con la tabla clara */
+.ti-input {
+  @apply !bg-ui-bg-deep !border-ui-border !text-ui-text-base !text-[11px] !w-64 !pl-10 !py-2 !rounded-xl outline-none transition-all focus:!border-int-primary/50;
 }
+
+/* LA CARTA: Este es el celeste blanquecino tipo Nord Snow Storm */
+.ti-card-light {
+  @apply bg-[#E5E9F0] border border-white rounded-2xl overflow-hidden shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7)];
+}
+
+.ti-overlay-light {
+  @apply absolute inset-0 flex items-center justify-center bg-white/60 backdrop-blur-sm z-50;
+}
+
+/* TEXTO DE CELDAS: Azul muy oscuro para legibilidad total sobre fondo claro */
+.ti-cell-dark {
+  @apply text-[11px] text-[#2E3440] font-mono font-bold tracking-tight;
+}
+
+/* OVERRIDES DE PRIMEVUE PARA TABLA CLARA */
+
+:deep(.p-datatable-thead > tr > th) {
+  /* Encabezado Celeste un poco más oscuro que el cuerpo */
+  @apply !bg-[#D8DEE9] !text-[#4C566A] !border-b !border-[#BFCAD9] !text-[10px] !font-black !uppercase !py-5 !px-6;
+}
+
+:deep(.p-datatable-tbody > tr) {
+  /* Filas blancas con borde muy sutil */
+  @apply !bg-[#ECEFF4] !border-b !border-[#D8DEE9];
+}
+
+:deep(.p-datatable-tbody > tr:hover) {
+  /* Hover celeste suave */
+  @apply !bg-[#E5E9F0];
+}
+
+:deep(.p-paginator) {
+  /* Paginador integrado en la base clara */
+  @apply !bg-[#D8DEE9] !border-t !border-[#BFCAD9] !text-[#4C566A] !py-3;
+}
+
+:deep(.p-paginator-page.p-highlight) {
+  @apply !bg-[#81A1C1] !text-white !font-black !rounded-lg;
+}
+
+.ti-sync-light { @apply flex items-center justify-center p-40; }
 </style>
