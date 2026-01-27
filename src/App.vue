@@ -41,8 +41,8 @@ const toggleMode = () => {
         <h3 class="text-tx-high font-bold text-xl">Logs de Auditoría (10,500 registros)</h3>
       </div>
       <div class="p-0">
-        <TiTableLazy 
-          url="http://localhost:8090/api/ti-table" 
+        <TiTableLazy
+          url="http://localhost:5173/api/ti-table.json"
           :rows="15"
         />
       </div>

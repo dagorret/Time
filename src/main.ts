@@ -1,7 +1,9 @@
 import { createApp } from 'vue';
 import PrimeVue from 'primevue/config';
-import Aura from '@primevue/themes/aura';
+import Aura from '@primeuix/themes/aura';
 import App from './App.vue';
+// Prueba con esta forma (sin el .css al final si el paquete lo permite, o con la ruta completa)
+import 'primeicons/primeicons.css';
 import './style.css';
 
 const app = createApp(App);

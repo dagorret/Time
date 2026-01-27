@@ -1,0 +1,13 @@
+{
+  "total": 3,
+  "schema": [
+    {"field": "id", "header": "ID", "sortable": true},
+    {"field": "nivel", "header": "Nivel", "sortable": true},
+    {"field": "mensaje", "header": "Evento", "sortable": false}
+  ],
+  "data": [
+    {"id": 1, "nivel": "ERROR", "mensaje": "Fallo de conexión en nodo Debian"},
+    {"id": 2, "nivel": "INFO", "mensaje": "Sistema Time OS operando nativamente"},
+    {"id": 3, "nivel": "SUCCESS", "mensaje": "Esquema sincronizado desde Mock"}
+  ]
+}

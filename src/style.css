@@ -1,53 +1,56 @@
 @import "tailwindcss";
 
 @theme {
-    /* --- [CORE] VARIABLES BASE (DEFAULT DARK) --- */
+    /* --- [MAPEO SEMÁNTICO] --- */
+    /* Superficies */
+    --color-ui-bg-deep: var(--base-abismo);
+    --color-ui-bg-base: var(--base-superficie);
+    --color-ui-bg-panel: var(--base-elevacion);
+
+    /* Tipografía */
+    --color-tx-high: var(--base-iluminacion);
+    --color-tx-med: color-mix(in srgb, var(--base-iluminacion), transparent 40%);
+    --color-tx-low: color-mix(in srgb, var(--base-iluminacion), transparent 70%);
+
+    /* Marca e Interacción */
+    --color-int-primary: var(--base-identidad);
+
+    /* Bordes y Líneas */
+    --color-border-thin: color-mix(in srgb, var(--base-iluminacion), transparent 85%);
+}
+
+/* --- [VARIABLES GLOBALES] --- */
+:root {
+    /* Default: Dark Mode (Abismo) */
     --base-abismo: #020617;
     --base-superficie: #0f172a;
     --base-elevacion: #1e293b;
     --base-identidad: #2563eb;
     --base-iluminacion: #f8fafc;
-
-    /* --- [MAPEO SEMÁNTICO DE COLORES] --- */
-    --color-ui-bg-deep: var(--base-abismo);
-    --color-ui-bg-base: var(--base-superficie);
-    --color-ui-bg-panel: var(--base-elevacion);
-
-    /* --- [TEXTO] --- */
-    --color-ui-text-base: var(--base-iluminacion);
-    --color-ui-text-muted: color-mix(in srgb, var(--base-iluminacion), transparent 40%);
-    --color-ui-text-low: color-mix(in srgb, var(--base-iluminacion), transparent 70%);
-
-    /* --- [BORDES] --- */
-    --color-ui-border: color-mix(in srgb, var(--base-iluminacion), transparent 85%);
-
-    /* --- [INTERACCIÓN] --- */
-    --color-int-primary: var(--base-identidad);
-    --color-int-hover: color-mix(in srgb, var(--base-identidad), white 20%);
 }
 
-/* --- [MODO LIGHT] RE-DEFINICIÓN DE BASES --- */
 :root:not(.dark) {
-    --base-abismo: #ffffff;
+    /* Light Mode (Snow) */
+    --base-abismo: #f8fafc;
     --base-superficie: #f1f5f9;
-    --base-elevacion: #e2e8f0;
+    --base-elevacion: #ffffff;
     --base-identidad: #2563eb;
     --base-iluminacion: #0f172a;
 }
 
-/* --- [BASE & RESET] --- */
+/* --- [BASE RESET] --- */
 @layer base {
     html, body {
         height: 100%;
         margin: 0;
-        /* Esto hace que el cambio de color sea suave y no un flash */
         transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     body {
-        /* Eliminamos los !important para que el Modo Light pueda entrar */
         background-color: var(--base-abismo);
         color: var(--base-iluminacion);
         font-family: 'Inter', system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
 }
