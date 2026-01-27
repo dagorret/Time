@@ -1,0 +1,12 @@
+@theme {
+    --p-primary-500: #3b82f6; /* Un azul vibrante moderno */
+
+    --color-brand-main: var(--p-primary-500);
+    --color-int-primary: var(--p-primary-500);
+
+    /* El fondo Slate que ves en tu captura */
+    --color-ui-bg-deep: #0f172a;
+    --color-tx-high: #f8fafc;    /* Texto casi blanco para que resalte */
+    --color-tx-med: #94a3b8;     /* Gris azulado para textos secundarios */
+    --color-border-thin: #1e293b;
+}

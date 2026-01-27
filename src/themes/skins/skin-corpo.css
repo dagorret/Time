@@ -1,0 +1,13 @@
+/* src/themes/skins/skin-corpo.css */
+@theme {
+    --p-primary-500: #000000; /* Botones y acentos en negro */
+
+    --color-brand-main: var(--p-primary-500);
+    --color-int-primary: var(--p-primary-500);
+
+    /* CAMBIA ESTO: Fondo principal blanco o gris casi blanco */
+    --color-ui-bg-deep: #ffffff;
+    --color-tx-high: #111827;
+    --color-tx-med: #6b7280;
+    --color-border-thin: #e5e7eb;
+}

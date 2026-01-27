@@ -1,56 +1,19 @@
+/* src/style.css */
 @import "tailwindcss";
 
-@theme {
-    /* --- [MAPEO SEMÁNTICO] --- */
-    /* Superficies */
-    --color-ui-bg-deep: var(--base-abismo);
-    --color-ui-bg-base: var(--base-superficie);
-    --color-ui-bg-panel: var(--base-elevacion);
+/* ==========================================
+   1. ELIGES LA PIEL (La "pintura")
+   ========================================== */
 
-    /* Tipografía */
-    --color-tx-high: var(--base-iluminacion);
-    --color-tx-med: color-mix(in srgb, var(--base-iluminacion), transparent 40%);
-    --color-tx-low: color-mix(in srgb, var(--base-iluminacion), transparent 70%);
+@import "./themes/skins/skin-classic.css";
+/* @import "./themes/skins/skin-corpo.css"; */
+/*  @import "./themes/skins/skin-modern.css"; */
 
-    /* Marca e Interacción */
-    --color-int-primary: var(--base-identidad);
 
-    /* Bordes y Líneas */
-    --color-border-thin: color-mix(in srgb, var(--base-iluminacion), transparent 85%);
-}
+/* ==========================================
+   2. CAPAS DE ORDEN
+   ========================================== */
+@layer tailwind-base, primevue, tailwind-utilities;
 
-/* --- [VARIABLES GLOBALES] --- */
-:root {
-    /* Default: Dark Mode (Abismo) */
-    --base-abismo: #020617;
-    --base-superficie: #0f172a;
-    --base-elevacion: #1e293b;
-    --base-identidad: #2563eb;
-    --base-iluminacion: #f8fafc;
-}
-
-:root:not(.dark) {
-    /* Light Mode (Snow) */
-    --base-abismo: #f8fafc;
-    --base-superficie: #f1f5f9;
-    --base-elevacion: #ffffff;
-    --base-identidad: #2563eb;
-    --base-iluminacion: #0f172a;
-}
-
-/* --- [BASE RESET] --- */
-@layer base {
-    html, body {
-        height: 100%;
-        margin: 0;
-        transition: background-color 0.3s ease, color 0.3s ease;
-    }
-
-    body {
-        background-color: var(--base-abismo);
-        color: var(--base-iluminacion);
-        font-family: 'Inter', system-ui, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-    }
-}
+@import "tailwindcss/preflight" layer(tailwind-base);
+@import "tailwindcss/utilities" layer(tailwind-utilities);

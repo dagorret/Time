@@ -1,0 +1,259 @@
+/* src/themes/skins/skin-classic.css */
+
+/* =========================================================
+   THEME VARIABLES (base visual + tipografía)
+   ========================================================= */
+@theme {
+    /* Brand */
+    --p-primary-500: #206bc4;
+    --color-int-primary: #206bc4;
+
+    /* Backgrounds */
+    --color-ui-bg-deep: #ffffff;
+    --color-ui-bg-soft: #f9fafb;
+
+    /* Text & borders */
+    --color-tx-high: #111827;
+    --color-tx-med: #6b7280;
+    --color-border-thin: #e5e7eb;
+
+    /* Typography – Tabler-ish */
+    --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+
+    --font-size-base: 13px;
+    --line-height-base: 1.35;
+    --font-weight-base: 400;
+
+    --font-size-header: 11px;
+    --font-weight-header: 600;
+    --letter-spacing-header: 0.06em;
+}
+
+/* =========================================================
+   BASE TYPOGRAPHY (global)
+   ========================================================= */
+html,
+body {
+    font-family: var(--font-sans);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    font-weight: var(--font-weight-base);
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* =========================================================
+   PRIMEVUE – FORZAR TIPOGRAFÍA (CLAVE)
+   ========================================================= */
+.p-component,
+.p-component * {
+    font-family: var(--font-sans) !important;
+}
+
+/* =========================================================
+   TIBUTTON – TABLER STYLE
+   - soporta .ti-button o .ti-btn
+   - variantes: .ti-btn-primary, .ti-btn-outline
+   - tamaños: .ti-btn-sm
+   ========================================================= */
+.ti-button,
+.ti-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.2;
+
+    padding: 8px 12px;
+    border-radius: 10px;
+
+    border: 1px solid transparent;
+    background: #ffffff;
+    color: var(--color-tx-high);
+
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06);
+    cursor: pointer;
+    user-select: none;
+}
+
+.ti-button:disabled,
+.ti-btn:disabled,
+.ti-button[aria-disabled="true"],
+.ti-btn[aria-disabled="true"] {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* Si TiButton envuelve PrimeVue Button, neutralizamos su huella */
+.ti-button.p-button,
+.ti-btn.p-button {
+    border-radius: inherit !important;
+    box-shadow: none !important;
+}
+
+/* Primary */
+.ti-btn-primary {
+    background: var(--p-primary-500);
+    border-color: var(--p-primary-500);
+    color: #ffffff;
+}
+.ti-btn-primary:hover {
+    background: #1e5fb3;
+    border-color: #1e5fb3;
+}
+
+/* Outline / Secondary */
+.ti-btn-outline {
+    background: #ffffff;
+    border: 1px solid var(--color-border-thin);
+    color: var(--color-tx-high);
+}
+.ti-btn-outline:hover {
+    background: #f9fafb;
+}
+
+/* Small */
+.ti-btn-sm {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 8px;
+}
+
+/* =========================================================
+   INPUTS (Search, filtros)
+   ========================================================= */
+.p-inputtext {
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+    padding: 8px 12px !important;
+
+    background: #ffffff !important;
+    border: 1px solid var(--color-border-thin) !important;
+    border-radius: 10px !important;
+    box-shadow: none !important;
+}
+
+.p-inputtext:focus {
+    outline: none !important;
+    border-color: #bfdbfe !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+}
+
+/* =========================================================
+   DATATABLE – TABLER STYLE
+   ========================================================= */
+.p-datatable,
+.p-datatable * {
+    font-family: var(--font-sans) !important;
+}
+
+/* ---- Header ---- */
+.p-datatable .p-datatable-thead > tr > th {
+    background-color: var(--color-ui-bg-soft) !important;
+    color: var(--color-tx-med) !important;
+
+    font-weight: var(--font-weight-header) !important;
+    font-size: var(--font-size-header) !important;
+    letter-spacing: var(--letter-spacing-header);
+    text-transform: uppercase;
+
+    padding: 10px 16px !important;
+    border-bottom: 1px solid var(--color-border-thin) !important;
+}
+
+/* ---- Body ---- */
+.p-datatable .p-datatable-tbody > tr > td {
+    background-color: #ffffff !important;
+    color: var(--color-tx-high) !important;
+
+    font-weight: 400 !important;
+    font-size: 12.5px !important;
+    line-height: 1.35 !important;
+
+    padding: 8px 16px !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+}
+
+/* Hover de fila (Tabler) */
+.p-datatable .p-datatable-tbody > tr:hover > td {
+    background: #f9fafb !important;
+}
+
+/* ---- Table base ---- */
+.p-datatable-table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+}
+
+/* =========================================================
+   PAGINATOR – TABLER STYLE
+   ========================================================= */
+.p-paginator {
+    background: transparent !important;
+    border: 0 !important;
+    padding: 10px 12px !important;
+}
+
+.p-paginator .p-paginator-element {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+
+    border: 1px solid var(--color-border-thin) !important;
+    background: #ffffff !important;
+    color: var(--color-tx-med) !important;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.p-paginator .p-paginator-element:hover {
+    background: #f9fafb !important;
+}
+
+.p-paginator .p-highlight {
+    background: #eff6ff !important;
+    border-color: #bfdbfe !important;
+    color: #1d4ed8 !important;
+}
+
+/* =========================================================
+   BADGES – NIVEL (ERROR / INFO / SUCCESS)
+   ========================================================= */
+.level-badge {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 2px 10px;
+    border-radius: 999px;
+
+    font-size: 12px;
+    font-weight: 500;
+
+    border: 1px solid var(--color-border-thin);
+    background: #f8fafc;
+    color: var(--color-tx-med);
+}
+
+.level-badge.is-error {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #991b1b;
+}
+
+.level-badge.is-info {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1d4ed8;
+}
+
+.level-badge.is-success {
+    background: #ecfdf5;
+    border-color: #bbf7d0;
+    color: #065f46;
+}

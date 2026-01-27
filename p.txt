@@ -1,0 +1,7 @@
+2. Guardarlos como "Prompts" de recuperación (Para volver a este chat)
+
+Si lo que quieres es una etiqueta corta para que, en otro momento, yo pueda buscar esta conversación específica, los 2 conceptos clave que resumen nuestra batalla de hoy son:
+
+    Vite-Tailwind4-Sync: El problema "grave" donde el plugin y la librería deben ser v4 para que no explote el Can't resolve 'tailwindcss'.
+
+    Layer-Order-Fix: La solución en main.ts y style.css para que PrimeVue y Tailwind no se pisen los estilos (lo que falló en time-lab).

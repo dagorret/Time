@@ -1,8 +1,9 @@
 import { createApp } from 'vue';
 import PrimeVue from 'primevue/config';
-import Aura from '@primeuix/themes/aura';
 import App from './App.vue';
-// Prueba con esta forma (sin el .css al final si el paquete lo permite, o con la ruta completa)
+
+// Elección de Preset y Estilos
+import { SELECTED_PRESET } from './themes/presets';
 import 'primeicons/primeicons.css';
 import './style.css';
 
@@ -10,9 +11,13 @@ const app = createApp(App);
 
 app.use(PrimeVue, {
     theme: {
-        preset: Aura,
+        preset: SELECTED_PRESET, // Usamos tu preset base
         options: {
             darkModeSelector: 'html.dark',
+            cssLayer: {
+                name: 'primevue',
+                order: 'tailwind-base, primevue, tailwind-utilities'
+            }
         }
     }
 });
