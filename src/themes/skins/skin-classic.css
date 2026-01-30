@@ -1,29 +1,59 @@
-/* CLASSIC SKIN: High Contrast B&W */
-.ti-status-icon { color: #000 !important; animation: none !important; }
-.ti-subtitle { color: #000 !important; }
-.ti-title { color: #000 !important; }
+@layer ti-skins {
+    .skin-classic {
+        /* Tokens Maestros Clásicos */
+        --ti-bg-app: #ffffff;
+        --ti-bg-card: #ffffff;
+        --ti-primary: #000000;
+        --ti-border-color: #000000;
+        --ti-text-main: #000000;
+        --ti-text-muted: #000000;
+        --ti-radius: 0px;
 
-/* Tabla en Blanco Total */
-.ti-table-card { border-color: #000 !important; border-radius: 0px !important; }
-:deep(.p-datatable-thead > tr > th) {
-    background-color: #fff !important;
-    color: #000 !important;
-    border-bottom: 2px solid #000 !important;
-}
-:deep(.p-datatable-tbody > tr > td) {
-    background-color: #fff !important;
-    color: #000 !important;
-    border-bottom: 1px solid #eee !important;
-}
+        background-color: var(--ti-bg-app);
+        color: var(--ti-text-main);
+        min-height: 100vh;
+    }
 
-/* Badges B&N */
-.ti-badge {
-    background-color: #fff !important;
-    color: #000 !important;
-    border: 1px solid #000 !important;
-    border-radius: 0px !important;
-}
-.badge-error {
-    background-color: #000 !important;
-    color: #fff !important;
+    /* Badges Clásicos (B&N) */
+    .skin-classic .ti-badge {
+        background-color: #fff !important;
+        color: #000 !important;
+        border: 1px solid #000 !important;
+        border-radius: 0px !important;
+    }
+    .skin-classic .badge-error {
+        background-color: #000 !important;
+        color: #fff !important;
+        border: 1px solid #000 !important;
+    }
+    .skin-classic .badge-success,
+    .skin-classic .badge-info {
+        background-color: #fff !important;
+        color: #000 !important;
+        border: 1px solid #000 !important;
+    }
+
+    /* Tabla PrimeVue (Classic Look) */
+    .skin-classic :deep(.p-datatable-thead > tr > th) {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border-bottom: 2px solid #000000 !important;
+        border-radius: 0px !important;
+        font-weight: 900 !important;
+        text-transform: uppercase !important;
+    }
+
+    .skin-classic :deep(.p-datatable-tbody > tr > td) {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border-bottom: 1px solid #000000 !important;
+        padding: 0.5rem 1rem !important;
+    }
+
+    /* Estilo para elementos de UI Classic */
+    .skin-classic .ti-title,
+    .skin-classic .ti-subtitle {
+        color: #000 !important;
+        font-weight: 900 !important;
+    }
 }

@@ -1,14 +1,17 @@
+// src/main.ts
 import { createApp } from 'vue';
 import PrimeVue from 'primevue/config';
-import App from './App.vue';
+import App from './AppPlayground.vue'; // Cambiamos a Playground para probar
 
-// Elección de Preset y Estilos
-import { SELECTED_PRESET } from './themes/presets';
-import 'primeicons/primeicons.css';
+// Estilos globales y capas
 import './style.css';
-// Si skin-tabler ya está dentro de style.css via @import, esta línea sobra.
-// Si no está en style.css, déjala aquí:
+import 'primeicons/primeicons.css';
+
+// Importamos ambos skins para que el switch de clases (.skin-modern / .skin-classic) funcione
 import './themes/skins/skin-tabler.css';
+import './themes/skins/skin-classic.css';
+
+import { SELECTED_PRESET } from './themes/presets';
 
 const app = createApp(App);
 
@@ -19,8 +22,8 @@ app.use(PrimeVue, {
             darkModeSelector: 'html.dark',
             cssLayer: {
                 name: 'primevue',
-                // AGREGAMOS 'skin-tabler' al orden oficial de la cascada
-                order: 'tailwind-base, primevue, skin-tabler, tailwind-utilities'
+                // El orden es vital: tailwind-utilities al final para permitir ajustes rápidos
+                order: 'tailwind-base, primevue, ti-skins, tailwind-utilities'
             }
         }
     }

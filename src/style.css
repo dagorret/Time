@@ -1,4 +1,7 @@
+/* src/style.css */
 @import "tailwindcss";
 
-/* El único skin que manda */
-@import "./themes/skins/skin-tabler.css";
+/* Definimos la capa para nuestros skins para que el main.ts la respete */
+@layer ti-skins {
+    /* Aquí no ponemos nada, se llena con los imports de los archivos .css */
+}

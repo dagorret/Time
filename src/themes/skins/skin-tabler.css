@@ -1,18 +1,54 @@
-/* Colores de los Badges (Modern) */
-.badge-error   { background-color: #fef2f2; color: #dc2626; border: 1px solid #fee2e2; }
-.badge-success { background-color: #f0fdf4; color: #16a34a; border: 1px solid #dcfce7; }
-.badge-info    { background-color: #f0f9ff; color: #0369a1; border: 1px solid #e0f2fe; }
+@layer ti-skins {
+    .skin-modern {
+        /* Tokens Maestros Modernos */
+        --ti-bg-app: #f6f8fb;
+        --ti-bg-card: #ffffff;
+        --ti-primary: #0054a6;
+        --ti-border-color: #e6e7e9;
+        --ti-text-main: #182433;
+        --ti-text-muted: #626976;
+        --ti-radius: 8px;
 
-/* Estilo de la tabla PrimeVue para que encaje con el resto de tus componentes Ti */
-:deep(.p-datatable-thead > tr > th) {
-    background-color: #f8fafc !important;
-    color: #64748b !important;
-    font-size: 11px !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.05em !important;
-    border-bottom: 1px solid #e2e8f0 !important;
-}
+        background-color: var(--ti-bg-app);
+        color: var(--ti-text-main);
+        min-height: 100vh;
+    }
 
-:deep(.p-datatable-tbody > tr > td) {
-    border-bottom: 1px solid #f1f5f9 !important;
+    /* Badges Modernos */
+    .skin-modern .badge-error {
+        background-color: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fee2e2;
+    }
+    .skin-modern .badge-success {
+        background-color: #f0fdf4;
+        color: #16a34a;
+        border: 1px solid #dcfce7;
+    }
+    .skin-modern .badge-info {
+        background-color: #f0f9ff;
+        color: #0369a1;
+        border: 1px solid #e0f2fe;
+    }
+
+    /* Tabla PrimeVue (Modern Look) */
+    .skin-modern :deep(.p-datatable-thead > tr > th) {
+        background-color: #f8fafc !important;
+        color: #64748b !important;
+        font-size: 11px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        border-bottom: 1px solid var(--ti-border-color) !important;
+    }
+
+    .skin-modern :deep(.p-datatable-tbody > tr > td) {
+        border-bottom: 1px solid #f1f5f9 !important;
+        padding: 0.75rem 1rem !important;
+    }
+
+    /* Inputs y botones específicos para el preset moderno */
+    .skin-modern .ti-input-field:focus {
+        border-color: var(--ti-primary) !important;
+        box-shadow: 0 0 0 4px rgba(0, 84, 166, 0.1) !important;
+    }
 }
