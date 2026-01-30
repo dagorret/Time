@@ -1,12 +1,11 @@
-// UBICACIÓN: src/themes/presets.ts
+// src/themes/presets.ts
 import Aura from '@primeuix/themes/aura';
 import Lara from '@primeuix/themes/lara';
 
 export const APP_THEMES = {
-    TIME_DEFAULT: Aura,
-    TIME_CLASSIC: Lara,
+    MODERN: Aura,   // El cimiento para Tabler
+    CLASSIC: Lara,  // El cimiento para el look anterior
 } as const;
 
-// Aquí es donde "eliges" qué preset se exporta para toda la app
-//export const SELECTED_PRESET = APP_THEMES.TIME_DEFAULT;
-export const SELECTED_PRESET = APP_THEMES.TIME_DEFAULT;
+// Si estás trabajando en la rama Tabler, dejamos Aura por defecto:
+export const SELECTED_PRESET = APP_THEMES.MODERN;

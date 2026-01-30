@@ -1,0 +1,18 @@
+/* Colores de los Badges (Modern) */
+.badge-error   { background-color: #fef2f2; color: #dc2626; border: 1px solid #fee2e2; }
+.badge-success { background-color: #f0fdf4; color: #16a34a; border: 1px solid #dcfce7; }
+.badge-info    { background-color: #f0f9ff; color: #0369a1; border: 1px solid #e0f2fe; }
+
+/* Estilo de la tabla PrimeVue para que encaje con el resto de tus componentes Ti */
+:deep(.p-datatable-thead > tr > th) {
+    background-color: #f8fafc !important;
+    color: #64748b !important;
+    font-size: 11px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+}
+
+:deep(.p-datatable-tbody > tr > td) {
+    border-bottom: 1px solid #f1f5f9 !important;
+}

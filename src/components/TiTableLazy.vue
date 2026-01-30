@@ -1,144 +1,93 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'; // + watch
+import { ref, onMounted } from 'vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import InputText from 'primevue/inputtext';
-import { Loader2, Search } from 'lucide-vue-next';
+import { IconCircleFilled, IconSearch } from '@tabler/icons-vue';
 
 const props = defineProps({
   url: { type: String, required: true },
-  rows: { type: Number, default: 15 }
+  title: { type: String, default: 'Activity Logs' }
 });
 
-const loading = ref(false);
-const totalRecords = ref(0);
 const items = ref([]);
 const serverSchema = ref([]);
-const filters = ref({ global: { value: null } });
+const loading = ref(false);
 
-// Guardamos el último evento de PrimeVue para re-usarlo al buscar
-const lastTableEvent = ref();
-
-const loadLazyData = async (event?: any) => {
-  if (event) lastTableEvent.value = event;
+const loadData = async () => {
   loading.value = true;
-
   try {
-    const e = lastTableEvent.value;
-    const page = e?.first ? Math.floor(e.first / (e.rows || props.rows)) + 1 : 1;
-
-    const query = new URLSearchParams({
-      page: page.toString(),
-      rows: (e?.rows || props.rows).toString(),
-      search: filters.value.global.value || '',
-      sortField: e?.sortField || 'id',
-      sortOrder: e?.sortOrder === 1 ? 'asc' : (e?.sortOrder === -1 ? 'desc' : 'desc')
-    });
-
-    const response = await fetch(`${props.url}?${query}`);
-    const result = await response.json();
-
-    if (result?.schema) serverSchema.value = result.schema;
+    const res = await fetch(props.url);
+    const result = await res.json();
+    serverSchema.value = result.schema || [];
     items.value = result.data || [];
-    totalRecords.value = result.total || 0;
-  } catch (e) {
-    console.error("TIME Sync Error:", e);
   } finally {
     loading.value = false;
   }
 };
 
-// Debounce para la búsqueda: espera 400ms tras dejar de escribir
-let searchTimeout: any;
-watch(() => filters.value.global.value, (newValue) => {
-  clearTimeout(searchTimeout);
-  searchTimeout = setTimeout(() => {
-    loadLazyData();
-  }, 400);
-});
+const getBadgeClass = (val: string) => {
+  const v = val?.toUpperCase() || '';
+  if (v.includes('ERROR')) return 'badge-error';
+  if (v.includes('SUCCESS')) return 'badge-success';
+  return 'badge-info';
+};
 
-onMounted(() => loadLazyData());
+onMounted(() => loadData());
 </script>
 
 <template>
-  <div class="ti-container">
-    <div class="flex justify-between items-end px-4 mb-4">
-      <div class="flex flex-col">
-        <span class="text-[9px] text-tx-low uppercase font-black tracking-[0.3em] mb-1">System Audit</span>
-        <h2 class="text-lg font-black text-tx-high tracking-tighter uppercase">Activity Logs</h2>
+  <div class="ti-table-component">
+    <div class="ti-table-header">
+      <div class="ti-table-title-group">
+        <div class="ti-table-status">
+          <IconCircleFilled class="ti-dot" :size="8" />
+          <span class="ti-status-text">Live Audit</span>
+        </div>
+        <h2 class="ti-title-text">{{ props.title }}</h2>
       </div>
-      <div class="relative group">
-        <Search class="absolute left-3 top-1/2 -translate-y-1/2 text-tx-low z-10" :size="14" />
-        <InputText v-model="filters.global.value" placeholder="Search..." class="ti-input" />
+
+      <div class="ti-table-actions">
+        <div class="ti-search-box">
+          <IconSearch :size="16" class="ti-search-icon" />
+          <input type="text" placeholder="Buscar..." class="ti-input-search" />
+        </div>
       </div>
     </div>
 
-    <div class="ti-card-light">
-      <DataTable
-          v-if="serverSchema.length > 0"
-          :value="items"
-          lazy paginator :rows="props.rows" :totalRecords="totalRecords" :loading="loading"
-          @page="loadLazyData" @sort="loadLazyData"
-          class="p-datatable-sm"
-          dataKey="id"
-      >
-        <template #loading>
-          <div class="ti-overlay-light">
-            <Loader2 class="animate-spin text-int-primary" :size="32" />
-          </div>
-        </template>
-
-        <Column v-for="col in serverSchema"
-                :key="col.field"
-                :field="col.field"
-                :header="col.header"
-                :sortable="col.sortable"
-                :style="{ width: col.width }"
-        >
+    <div class="ti-table-card">
+      <DataTable :value="items" :loading="loading" class="p-datatable-sm">
+        <Column v-for="col in serverSchema" :key="col.field" :field="col.field" :header="col.header">
           <template #body="{ data, field }">
-       <span class="ti-cell-dark">
-          {{ data[field] }}
-       </span>
+            <template v-if="field.toUpperCase() === 'NIVEL'">
+              <span :class="['ti-badge', getBadgeClass(data[field])]">
+                {{ data[field] }}
+              </span>
+            </template>
+            <span v-else class="ti-row-text">{{ data[field] }}</span>
           </template>
         </Column>
       </DataTable>
-
-      <div v-else class="flex items-center justify-center p-40">
-        <Loader2 class="animate-spin text-int-primary/30" :size="24" />
-      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-/* Tu estilo se mantiene igual, está perfecto */
 @reference "../style.css";
 
-.ti-input {
-  @apply !bg-ui-bg-deep !border-border-thin !text-tx-high !text-[11px] !w-64 !pl-10 !py-2 !rounded-xl outline-none transition-all focus:!border-int-primary/50;
-}
+/* Estructura del componente TiTableLazy */
+.ti-table-component { @apply flex flex-col gap-6 w-full; }
+.ti-table-header { @apply flex justify-between items-end; }
+.ti-table-title-group { @apply flex flex-col gap-1; }
+.ti-table-status { @apply flex items-center gap-2; }
+.ti-dot { @apply text-blue-500 animate-pulse; }
+.ti-status-text { @apply text-[10px] font-bold uppercase tracking-widest text-slate-400; }
+.ti-title-text { @apply text-2xl font-black uppercase tracking-tight text-slate-800; }
 
-.ti-card-light {
-  @apply bg-[#E5E9F0] border border-white/10 rounded-2xl overflow-hidden shadow-2xl;
-}
+.ti-search-box { @apply relative flex items-center; }
+.ti-search-icon { @apply absolute left-3 text-slate-400; }
+.ti-input-search { @apply border border-slate-200 rounded-lg py-2 pl-10 pr-4 text-sm w-64 focus:ring-2 focus:ring-blue-500/20 outline-none; }
 
-.ti-overlay-light {
-  @apply absolute inset-0 flex items-center justify-center bg-white/60 backdrop-blur-sm z-50;
-}
-
-.ti-cell-dark {
-  @apply text-[11px] text-[#2E3440] font-mono font-bold tracking-tight;
-}
-
-:deep(.p-datatable-thead > tr > th) {
-  @apply !bg-[#D8DEE9] !text-[#4C566A] !border-b !border-[#BFCAD9] !text-[10px] !font-black !uppercase !py-5 !px-6;
-}
-
-:deep(.p-datatable-tbody > tr) {
-  @apply !bg-[#ECEFF4] !border-b !border-[#D8DEE9]/50;
-}
-
-:deep(.p-paginator) {
-  @apply !bg-[#D8DEE9] !border-t !border-[#BFCAD9] !text-tx-med !py-3;
-}
+.ti-table-card { @apply bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden; }
+.ti-badge { @apply px-2 py-0.5 rounded text-[10px] font-bold border uppercase; }
+.ti-row-text { @apply text-[13px] text-slate-600 font-medium; }
 </style>
