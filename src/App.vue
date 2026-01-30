@@ -1,48 +1,95 @@
 <script setup lang="ts">
-import TiLayout from './components/TiLayout.vue'; // Ajusta la ruta según tu carpeta
-import TiTableLazy from './components/TiTableLazy.vue'; // Ajusta la ruta según tu carpeta
-import {
-  IconLayoutDashboard,
-  IconUsers,
-  IconSettings,
-  IconActivity
-} from '@tabler/icons-vue';
+import { ref } from 'vue';
+import TiNavigation from './components/TiNavigation.vue';
+import TiTableLazy from './components/TiTableLazy.vue';
+import TiButton from './components/TiButton.vue';
 
-// Configuración de navegación para el Sidebar
-const navigation = [
-  { label: 'Dashboard', icon: IconLayoutDashboard, path: '/' },
-  { label: 'Usuarios', icon: IconUsers, path: '/usuarios' },
-  { label: 'Logs de Sistema', icon: IconActivity, path: '/logs' },
-  { label: 'Configuración', icon: IconSettings, path: '/config' },
+const currentSkin = ref('skin-modern');
+const filters = ref({ search: '', status: null });
+
+const statusOptions = [
+  { label: 'Activo', value: 'Activo' },
+  { label: 'Bloqueado', value: 'Bloqueado' },
+  { label: 'Inactivo', value: 'Inactivo' }
+];
+
+const columnas = [
+  { field: 'id', header: 'ID' },
+  { field: 'nombre', header: 'CLIENTE' },
+  { field: 'estado', header: 'ESTADO' },
+  { field: 'ultimo_acceso', header: 'FECHA' }
 ];
 </script>
 
 <template>
-  <TiLayout
-      title="Time Lab"
-      :navItems="navigation"
-  >
-    <div class="space-y-6">
+  <div :class="currentSkin" class="app-viewport">
+    <div class="container">
 
-      <TiTableLazy
-          url="/api/ti-table.json"
-          :rows="15"
-      />
+      <header class="main-header">
+        <h1 class="logo">TIME<span>ADMIN</span></h1>
+        <div class="skin-controls">
+          <TiButton
+              label="MODERN"
+              @click="currentSkin = 'skin-modern'"
+              :variant="currentSkin === 'skin-modern' ? 'primary' : 'outline'"
+          />
+          <TiButton
+              label="CLASSIC"
+              @click="currentSkin = 'skin-classic'"
+              :variant="currentSkin === 'skin-classic' ? 'primary' : 'outline'"
+          />
+        </div>
+      </header>
+
+      <section class="nav-section">
+        <TiNavigation
+            v-model="filters"
+            :statusOptions="statusOptions"
+            :show-search="true"
+            :show-filter="true"
+        />
+      </section>
+
+      <section class="table-section">
+        <TiTableLazy
+            api-url="/api/ti-table.json"
+            :filters="filters"
+            :columns="columnas"
+        />
+      </section>
 
     </div>
-  </TiLayout>
+  </div>
 </template>
 
 <style>
-/* Estilos globales mínimos para asegurar que el body no tenga márgenes */
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background-color: #f6f8fb; /* El fondo oficial Tabler */
+/* Estilos globales de layout para que no se peguen los elementos */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; /* Este espacio es vital para la estética */
 }
 
-#app {
-  height: 100%;
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-weight: 900;
+  letter-spacing: -1px;
+  color: var(--ti-text-main);
+}
+
+.logo span {
+  color: var(--ti-primary);
+}
+
+.skin-controls {
+  display: flex;
+  gap: 0.5rem;
 }
 </style>

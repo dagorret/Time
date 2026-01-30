@@ -1,7 +1,7 @@
 // src/main.ts
 import { createApp } from 'vue';
 import PrimeVue from 'primevue/config';
-import App from './AppPlayground.vue'; // Cambiamos a Playground para probar
+import App from './App.vue'; // Cambiamos a Playground para probar
 
 // Estilos globales y capas
 import './style.css';
